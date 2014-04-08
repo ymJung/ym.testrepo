@@ -21,6 +21,10 @@ public class BlockHash {
     public BlockHash(String value) {
         this.hashValue = value;
     }
+    public BlockHash(String value, int size) {
+        this.hashValue = value;
+        this.size = size;
+    }
     public String getHashValue() {
         return hashValue;
     }

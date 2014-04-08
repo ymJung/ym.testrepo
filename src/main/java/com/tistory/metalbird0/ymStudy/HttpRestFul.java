@@ -23,14 +23,17 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import com.tistory.metalbird0.ymStudy.model.BlockHash;
 import com.tistory.metalbird0.ymStudy.model.Content;
 
+
+
 public class HttpRestFul {
 
-    public void download(String sourceUrl, String xmlStr) throws ClientProtocolException, IOException {
+    public final static String DEFAULT_PATH = "/Dev/workspace/ymStudy/WebContent/META-INF/";
+
+    public void download(String sourceUrl, String xmlStr, String saveFileName) throws IOException {
         DefaultHttpClient httpClient = new DefaultHttpClient();
 
         HttpPost post = new HttpPost(sourceUrl);
         post.setHeader("Content-Type", "application/xml");
-        //        HttpEntity entity = new StringEntity(xmlStr);
         HttpEntity entity = new ByteArrayEntity(xmlStr.getBytes());
         post.setEntity(entity);
 
@@ -39,7 +42,7 @@ public class HttpRestFul {
         try {
             HttpResponse response = httpClient.execute(post);
             is = response.getEntity().getContent();
-            os = new FileOutputStream("/Dev/workspace/ymStudy/WebContent/META-INF/concatfile");
+            os = new FileOutputStream(saveFileName);
             IOUtils.copy(is, os);
             os.flush();
             System.out.println("\n Download complete.");
@@ -48,28 +51,30 @@ public class HttpRestFul {
         } finally {
             os.close();
             is.close();
-            //            Closeables.closeQuietly(os);
-            //            Closeables.closeQuietly(is);
         }
     }
 
-    public static void main(String[] args) {
+    public void blockDownloadTest(String...blocks) {
         String blockUrl = "http://localhost:19380/sa/func/concat";
         String xml = "";
+        String savePath = DEFAULT_PATH + "concatfile";
         HttpRestFul rest = new HttpRestFul();
         Content content = new Content();
         List<BlockHash> blockHashList = new ArrayList<>();
-        blockHashList.add(new BlockHash("-xIXM34yBuEDe_8wg3o8y23ma6epWgoANY3YEHIyHPM"));
-        blockHashList.add(new BlockHash("jDpyKzyGSPHC-qsTLkgVDGgx9KEVQEyD3hjODgUAAKo"));
-        blockHashList.add(new BlockHash("BPOCa24YoOwjJrnVdne60zV1ylKVKl5VXypySiIBYJw"));
-        blockHashList.add(new BlockHash("fuyqDBoYNexY9M6BDNTU9xIV37tk_k3TvnfGpgp6C2o"));
-        
+        if(blocks.length == 1) {
+            savePath = DEFAULT_PATH + blocks[0];
+        }
+        for(String block : blocks) {
+            System.out.println(block);
+            blockHashList.add(new BlockHash(block));
+        }
+
         content.setBlockHashList(blockHashList);
 
         xml = convertObjectToXml(content);
         System.out.println(xml);
         try {
-            rest.download(blockUrl, xml);
+            rest.download(blockUrl, xml, savePath);
         } catch (ClientProtocolException e) {
             e.printStackTrace();
         } catch (IOException e) {
