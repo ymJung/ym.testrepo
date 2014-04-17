@@ -32,15 +32,14 @@ public class BlockVerifier {
     }
 
     public static void main(String[] args) {
-        String hash1 = "v8lDw2oedBjbUnahw0fGK0UcXuXktfraNnB4BxzgV7g";
-        String hash2= "rwPE-tpzKdeU_yb00ZwVZLAkZVAKQr7xept-vj70dPM";
         HttpRestFul rest = new HttpRestFul();
-        rest.blockDownloadTest(hash1, hash2);
+        rest.blockDownloadTest(
+            "kEg9wu3-vKL2v5G0lvmcqVx3ZoiWo0V5lcoHIgJYYuE","KWEnTaEaRAwSfa74nODgdjkaFIxBvgJ2m1EXbC1bX8s","Tq--H9BZM3Eptijl2Jo8bMIIdAKFDrFfzVnz74adApo");
 
         InputStream is = null;
         try {
             BlockVerifier verifier = new BlockVerifier();
-            Path path = Paths.get(HttpRestFul.DEFAULT_PATH + hash1);
+            Path path = Paths.get(HttpRestFul.DEFAULT_PATH + "samplePPT1.ppt");
             byte[] buff = new byte[1766858];
             is = Files.newInputStream(path);
             is.read(buff);
